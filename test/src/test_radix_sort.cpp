@@ -72,8 +72,8 @@ int runAllTests() {
     }
   }
 
-  std::cout << "\nRan " << getTestCases().size() << " tests. " << success_count
-            << " succeeded, " << failure_count << " failed." << "\n";
+  std::cout << "\nRun " << getTestCases().size() << " tests. " << COLOR_GREEN << success_count << COLOR_RESET
+            << " succeeded, " << COLOR_RED << failure_count << COLOR_RESET << " failed." << "\n";
 
   return (failure_count == 0) ? 0 : 1;
 }
