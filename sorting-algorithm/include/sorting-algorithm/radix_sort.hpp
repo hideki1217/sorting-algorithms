@@ -28,7 +28,7 @@ void unsigned_radix_sort(Range &range) {
   auto buffer0 = std::vector<ValueT>(size);
   auto buffer1 = std::vector<ValueT>(size);
   std::copy(std::begin(range), std::end(range), std::begin(buffer0));
-  for (auto e = 0; e < BitSize / BucketBit; ++e) {
+  for (size_t e = 0; e < BitSize / BucketBit; ++e) {
     const auto mask = BaseMask << (e * BucketBit);
 
     auto bucket = std::array<size_t, BucketSize>();
@@ -70,7 +70,7 @@ void signed_radix_sort(Range &range) {
   auto buffer1 = std::vector<ValueT>(size);
   std::copy(std::begin(range), std::end(range), std::begin(buffer0));
 
-  for (auto e = 0; e < (BitSize - 1) / BucketBit; ++e) {
+  for (size_t e = 0; e < (BitSize - 1) / BucketBit; ++e) {
     constexpr ValueT BaseMask = (1 << BucketBit) - 1;
     constexpr size_t BucketSize = 1 << BucketBit;
     const auto mask = BaseMask << (e * BucketBit);
@@ -112,7 +112,8 @@ void signed_radix_sort(Range &range) {
     }
 
     for (auto x : buffer0) {
-      buffer1[cum_bucket[(x & mask) >> (((BitSize - 1) / BucketBit) * BucketBit)]++] = x;
+      buffer1[cum_bucket[(x & mask) >>
+                         (((BitSize - 1) / BucketBit) * BucketBit)]++] = x;
     }
 
     buffer0.swap(buffer1);

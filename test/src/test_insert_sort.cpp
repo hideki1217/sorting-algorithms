@@ -1,13 +1,12 @@
-
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
 
 #include <test_sort_utility.hpp>
 
-#include <sorting-algorithm/radix_sort.hpp>
+#include <sorting-algorithm/insert_sort.hpp>
 
-template <typename Type> bool testRadixSort(size_t input_size) {
+template <typename Type> bool testInsertSort(size_t input_size) {
   bool is_ok = true;
   using T = Type;
   const size_t size = input_size;
@@ -18,15 +17,15 @@ template <typename Type> bool testRadixSort(size_t input_size) {
     std::ranges::sort(expect);
 
     auto actual = std::move(input);
-    sorting::radix_sort(actual);
+    sorting::insert_sort(actual);
 
     ASSERT_EQ(expect, actual);
   }
   return is_ok;
 }
-TestSort(RadixSort, int8_t);
-TestSort(RadixSort, int32_t);
-TestSort(RadixSort, int64_t);
-TestSort(RadixSort, uint8_t);
-TestSort(RadixSort, uint32_t);
-TestSort(RadixSort, uint64_t);
+TestSort(InsertSort, int8_t);
+TestSort(InsertSort, int32_t);
+TestSort(InsertSort, int64_t);
+TestSort(InsertSort, uint8_t);
+TestSort(InsertSort, uint32_t);
+TestSort(InsertSort, uint64_t);
