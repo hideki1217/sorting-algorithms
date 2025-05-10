@@ -13,6 +13,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED true)
 #
 add_subdirectory(sorting-algorithm)
 
+# Benchmark
+add_subdirectory(benchmark)
 
 enable_testing()
 add_subdirectory(test)
