@@ -9,14 +9,14 @@
 #define EXPECT_EQ(expect, actual)                                              \
   do {                                                                         \
     if ((expect) != (actual)) {                                                \
-      std::printf("EXPECT_EQ:FAILED: %s:%d\n", __FILE__, __LINE__);            \
+      std::printf("\nEXPECT_EQ:FAILED: %s:%d\n", __FILE__, __LINE__);          \
       is_ok = false;                                                           \
     }                                                                          \
   } while (false)
 #define ASSERT_EQ(expect, actual)                                              \
   do {                                                                         \
     if ((expect) != (actual)) {                                                \
-      std::printf("ASSERT_EQ:FAILED: %s:%d\n", __FILE__, __LINE__);            \
+      std::printf("\nASSERT_EQ:FAILED: %s:%d\n", __FILE__, __LINE__);          \
       return false;                                                            \
     }                                                                          \
   } while (false)
