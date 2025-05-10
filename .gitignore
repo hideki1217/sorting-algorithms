@@ -2,6 +2,7 @@ build/
 
 .env
 .cache
+.vscode
 
 *.csv
 *.out
