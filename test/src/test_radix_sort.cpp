@@ -1,14 +1,16 @@
 
+#include "sorting-algorithm/insert_sort.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <functional>
+#include <iomanip>
 #include <iostream>
 #include <limits>
 #include <random>
 #include <vector>
-#include <iomanip>
 
+#include <sorting-algorithm/insert_sort.hpp>
 #include <sorting-algorithm/radix_sort.hpp>
 
 template <typename T> std::vector<T> generateRandomVector(size_t size) {
@@ -33,7 +35,7 @@ template <typename T> std::vector<T> generateRandomVector(size_t size) {
 #define ASSERT_EQ(expect, actual)                                              \
   do {                                                                         \
     if ((expect) != (actual)) {                                                \
-      std::printf("ASSERT_EQ:FAILED: %s:%d\n", __FILE__, __LINE__);          \
+      std::printf("ASSERT_EQ:FAILED: %s:%d\n", __FILE__, __LINE__);            \
       return false;                                                            \
     }                                                                          \
   } while (false)
@@ -48,9 +50,8 @@ std::vector<TestCase> &getTestCases() {
   return tests;
 }
 
-template<typename Str>
-void registerTest(Str &&name,
-                  std::function<bool()> test_function) {
+template <typename Str>
+void registerTest(Str &&name, std::function<bool()> test_function) {
   getTestCases().push_back({std::forward<Str>(name), test_function});
 }
 
@@ -67,13 +68,14 @@ int runAllTests() {
       std::cout << COLOR_GREEN << "  [OK]" << COLOR_RESET << "\n";
       success_count++;
     } else {
-        std::cout << COLOR_RED << "  [FAILED]" << COLOR_RESET << "\n\n";
+      std::cout << COLOR_RED << "  [FAILED]" << COLOR_RESET << "\n\n";
       failure_count++;
     }
   }
 
-  std::cout << "\nRun " << getTestCases().size() << " tests. " << COLOR_GREEN << success_count << COLOR_RESET
-            << " succeeded, " << COLOR_RED << failure_count << COLOR_RESET << " failed." << "\n";
+  std::cout << "\nRun " << getTestCases().size() << " tests. " << COLOR_GREEN
+            << success_count << COLOR_RESET << " succeeded, " << COLOR_RED
+            << failure_count << COLOR_RESET << " failed." << "\n";
 
   return (failure_count == 0) ? 0 : 1;
 }
@@ -81,15 +83,21 @@ struct TestRegistrar {
   TestRegistrar(const std::string &name, std::function<bool()> func) {
     registerTest(name, func);
   }
-  TestRegistrar(const std::string &name, std::function<bool(size_t)> func, const std::vector<size_t>& values) {
-    for (auto value: values) {
-        registerTest(std::string(name) + "/" + std::to_string(value) , [func, value] { return func(value);});
+  TestRegistrar(const std::string &name, std::function<bool(size_t)> func,
+                const std::vector<size_t> &values) {
+    for (auto value : values) {
+      registerTest(std::string(name) + "/" + std::to_string(value),
+                   [func, value] { return func(value); });
     }
   }
 };
 
 using Sizes = std::vector<size_t>;
-const Sizes sizeParameter = {1<<0, 1<<2, 1<<4, 1<<6, 1<<8, 1<<10};
+const Sizes sizeParameter = {1 << 0, 1 << 2, 1 << 4, 1 << 6, 1 << 8, 1 << 10};
+
+#define TestSort(TargetSort, Type)                                             \
+  TestRegistrar registrar_test##TargetSort##Type##Size(                        \
+      "test" #TargetSort "/" #Type, test##TargetSort<Type>, sizeParameter);
 
 template <typename Type> bool testRadixSort(size_t input_size) {
   bool is_ok = true;
@@ -108,18 +116,37 @@ template <typename Type> bool testRadixSort(size_t input_size) {
   }
   return is_ok;
 }
-#define TestRadixSort(Type)                                         \
-  TestRegistrar registrar_test##Type##Size(                         \
-      "testRadixSort/" #Type,                                \
-      testRadixSort<Type>, sizeParameter);
+TestSort(RadixSort, int8_t);
+TestSort(RadixSort, int32_t);
+TestSort(RadixSort, int64_t);
+TestSort(RadixSort, uint8_t);
+TestSort(RadixSort, uint32_t);
+TestSort(RadixSort, uint64_t);
 
-TestRadixSort(int8_t);
-TestRadixSort(int32_t);
-TestRadixSort(int64_t);
-TestRadixSort(uint8_t);
-TestRadixSort(uint32_t);
-TestRadixSort(uint64_t);
+template <typename Type> bool testInsertSort(size_t input_size) {
+  bool is_ok = true;
+  using T = Type;
+  const size_t size = input_size;
+  for (size_t _ = 0; _ < 10; ++_) {
+    auto input = generateRandomVector<T>(size);
 
-#undef TestRadixSort
+    auto expect = input;
+    std::ranges::sort(expect);
+
+    auto actual = std::move(input);
+    sorting::insert_sort(actual);
+
+    ASSERT_EQ(expect, actual);
+  }
+  return is_ok;
+}
+TestSort(InsertSort, int8_t);
+TestSort(InsertSort, int32_t);
+TestSort(InsertSort, int64_t);
+TestSort(InsertSort, uint8_t);
+TestSort(InsertSort, uint32_t);
+TestSort(InsertSort, uint64_t);
+
+#undef TestSort
 
 int main(int argc, char **argv) { return runAllTests(); }
